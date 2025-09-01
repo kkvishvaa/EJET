@@ -6,6 +6,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Set environment to production for Vercel
+if (process.env.VERCEL) {
+  app.set("env", "production");
+}
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
