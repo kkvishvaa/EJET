@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { flightSearchSchema, insertFlightSchema, insertBookingSchema } from "@shared/schema";
+import { flightTrackingService, weatherService, airportService } from "./services/externalApis";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -150,6 +151,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(destinations);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch popular destinations" });
+    }
+  });
+
+  // External API integration routes
+  app.get("/api/live-flights", async (req, res) => {
+    try {
+      const flights = await flightTrackingService.getLiveFlights();
+      res.json(flights);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch live flights" });
+    }
+  });
+
+  app.get("/api/live-flights/:callsign", async (req, res) => {
+    try {
+      const flight = await flightTrackingService.getFlightByCallsign(req.params.callsign);
+      if (!flight) {
+        return res.status(404).json({ message: "Flight not found" });
+      }
+      res.json(flight);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch flight" });
+    }
+  });
+
+  app.get("/api/weather", async (req, res) => {
+    try {
+      const { lat, lon } = req.query;
+      if (!lat || !lon) {
+        return res.status(400).json({ message: "Latitude and longitude are required" });
+      }
+      
+      const weather = await weatherService.getWeatherByCoordinates(
+        parseFloat(lat as string),
+        parseFloat(lon as string)
+      );
+      
+      if (!weather) {
+        return res.status(404).json({ message: "Weather data not available" });
+      }
+      
+      res.json(weather);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch weather data" });
+    }
+  });
+
+  app.get("/api/airports", async (req, res) => {
+    try {
+      const { search } = req.query;
+      let airports;
+      
+      if (search) {
+        airports = await airportService.searchAirports(search as string);
+      } else {
+        airports = await airportService.getAllAirports();
+      }
+      
+      res.json(airports);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch airports" });
+    }
+  });
+
+  app.get("/api/airports/:code", async (req, res) => {
+    try {
+      const airport = await airportService.getAirportByCode(req.params.code);
+      if (!airport) {
+        return res.status(404).json({ message: "Airport not found" });
+      }
+      res.json(airport);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch airport" });
     }
   });
 

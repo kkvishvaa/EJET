@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, Navigation, Zap } from "lucide-react";
+import { useLocation } from "wouter";
 import type { Aircraft } from "@shared/schema";
 
 interface AircraftCardProps {
@@ -25,12 +26,19 @@ const categoryLabels = {
 };
 
 export default function AircraftCard({ aircraft, onViewDetails, onBook }: AircraftCardProps) {
+  const [, setLocation] = useLocation();
+
   const handleViewDetails = () => {
     onViewDetails?.(aircraft);
   };
 
   const handleBook = () => {
-    onBook?.(aircraft);
+    if (onBook) {
+      onBook(aircraft);
+    } else {
+      // Navigate to booking page with aircraft details
+      setLocation(`/booking?aircraft=${aircraft.id}`);
+    }
   };
 
   return (

@@ -10,6 +10,8 @@ import Search from "@/pages/search";
 import Track from "@/pages/track";
 import Deals from "@/pages/deals";
 import Dashboard from "@/pages/dashboard";
+import Booking from "@/pages/booking";
+import BookingConfirmation from "@/pages/booking-confirmation";
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
 
@@ -22,6 +24,8 @@ function Router() {
       <Route path="/track" component={Track} />
       <Route path="/deals" component={Deals} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/booking" component={Booking} />
+      <Route path="/booking-confirmation" component={BookingConfirmation} />
       <Route component={NotFound} />
     </Switch>
   );
