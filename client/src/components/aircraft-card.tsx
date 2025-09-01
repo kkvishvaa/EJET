@@ -45,7 +45,7 @@ export default function AircraftCard({ aircraft, onViewDetails, onBook }: Aircra
     <Card className="group overflow-hidden shadow-lg border border-border hover:shadow-xl transition-all duration-300">
       <div className="relative h-64 overflow-hidden">
         <img
-          src={aircraft.imageUrl || "https://images.unsplash.com/photo-1556388158-158ea5ccacbd?ixlib=rb-4.0.3"}
+          src={aircraft.imageUrl || "/jet1.png"}
           alt={`${aircraft.manufacturer} ${aircraft.model}`}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />

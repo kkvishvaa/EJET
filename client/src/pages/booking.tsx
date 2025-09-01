@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { z } from "zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
-import { User, MapPin, CreditCard, Check } from "lucide-react";
+import { User, MapPin, CreditCard, Check, Loader2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { Aircraft } from "@shared/schema";
@@ -58,13 +58,25 @@ interface BookingPageProps {
 }
 
 export default function Booking() {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
-  const [aircraft] = useState<Aircraft | null>(
-    // In a real app, this would come from route params or state
-    null
-  );
+  
+  // Parse aircraft ID from URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const aircraftId = urlParams.get('aircraft');
+  
+  // Fetch aircraft data if aircraftId is provided
+  const { data: aircraft, isLoading: aircraftLoading, error: aircraftError } = useQuery({
+    queryKey: ['/api/aircraft', aircraftId],
+    queryFn: async () => {
+      if (!aircraftId) return null;
+      const response = await fetch(`/api/aircraft/${aircraftId}`);
+      if (!response.ok) throw new Error('Failed to fetch aircraft');
+      return response.json();
+    },
+    enabled: !!aircraftId,
+  });
 
   const form = useForm<PassengerDetails>({
     resolver: zodResolver(passengerDetailsSchema),
@@ -144,8 +156,62 @@ export default function Booking() {
           </p>
         </div>
 
-        {/* Progress Indicator */}
-        <Card className="mb-8">
+        {/* Loading State */}
+        {aircraftLoading && aircraftId && (
+          <Card className="mb-8">
+            <CardContent className="p-8 text-center">
+              <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+              <p className="text-muted-foreground">Loading aircraft details...</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Error State */}
+        {aircraftError && aircraftId && (
+          <Card className="mb-8 border-destructive">
+            <CardContent className="p-8 text-center">
+              <p className="text-destructive mb-4">Failed to load aircraft details</p>
+              <Button 
+                variant="outline" 
+                onClick={() => setLocation('/search')}
+              >
+                Back to Search
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Aircraft Info Card */}
+        {aircraft && (
+          <Card className="mb-8">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-6">
+                <img
+                  src={aircraft.imageUrl || "/jet1.png"}
+                  alt={`${aircraft.manufacturer} ${aircraft.model}`}
+                  className="w-24 h-16 object-cover rounded-lg"
+                />
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold">
+                    {aircraft.manufacturer} {aircraft.model}
+                  </h3>
+                  <p className="text-muted-foreground">
+                    {aircraft.category} • {aircraft.capacity} passengers
+                  </p>
+                  <p className="text-lg font-bold text-primary">
+                    ${parseFloat(aircraft.hourlyRate).toLocaleString()}/hour
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Show booking form only if not loading and no errors */}
+        {(!aircraftId || (!aircraftLoading && !aircraftError)) && (
+          <>
+            {/* Progress Indicator */}
+            <Card className="mb-8">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <span className="text-sm font-medium">Booking Progress</span>
@@ -514,6 +580,8 @@ export default function Booking() {
             </Card>
           )}
         </form>
+        </>
+        )}
       </div>
     </div>
   );

@@ -120,7 +120,15 @@ export class WeatherService {
   }
 }
 
-// Airport data service (using sample data - would integrate with OurAirports CSV)
+import * as fs from 'fs';
+import * as path from 'path';
+import { fileURLToPath } from 'url';
+
+// Get __dirname equivalent for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Airport data service (using OurAirports CSV data)
 export interface AirportData {
   code: string;
   name: string;
@@ -129,75 +137,200 @@ export interface AirportData {
   latitude: number;
   longitude: number;
   elevation: number;
+  type: string;
+  icao: string;
+  continent: string;
 }
 
 export class AirportService {
-  // Sample major airports - in production, this would load from OurAirports CSV
-  private airports: AirportData[] = [
-    {
-      code: "JFK",
-      name: "John F. Kennedy International Airport",
-      city: "New York",
-      country: "United States",
-      latitude: 40.6413,
-      longitude: -73.7781,
-      elevation: 13,
-    },
-    {
-      code: "LAX",
-      name: "Los Angeles International Airport",
-      city: "Los Angeles",
-      country: "United States",
-      latitude: 33.9428,
-      longitude: -118.4081,
-      elevation: 125,
-    },
-    {
-      code: "MIA",
-      name: "Miami International Airport",
-      city: "Miami",
-      country: "United States",
-      latitude: 25.7956,
-      longitude: -80.2906,
-      elevation: 8,
-    },
-    {
-      code: "ORD",
-      name: "O'Hare International Airport",
-      city: "Chicago",
-      country: "United States",
-      latitude: 41.9742,
-      longitude: -87.9073,
-      elevation: 672,
-    },
-    {
-      code: "LAS",
-      name: "McCarran International Airport",
-      city: "Las Vegas",
-      country: "United States",
-      latitude: 36.0840,
-      longitude: -115.1537,
-      elevation: 2181,
-    },
-  ];
+  private airports: AirportData[] = [];
+  private isLoaded: boolean = false;
 
-  async searchAirports(query: string): Promise<AirportData[]> {
-    const normalizedQuery = query.toLowerCase();
-    return this.airports.filter(airport => 
-      airport.code.toLowerCase().includes(normalizedQuery) ||
-      airport.name.toLowerCase().includes(normalizedQuery) ||
-      airport.city.toLowerCase().includes(normalizedQuery)
-    );
+  private async loadAirportsFromCSV(): Promise<void> {
+    if (this.isLoaded) return;
+
+    try {
+      const csvPath = path.join(__dirname, '../data/ourairports.csv');
+      const csvContent = fs.readFileSync(csvPath, 'utf-8');
+      const lines = csvContent.split('\n');
+      const headers = lines[0].split(',');
+
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        const values = line.split(',');
+        if (values.length < headers.length) continue;
+
+        const airport: AirportData = {
+          icao: values[0] || '',
+          type: values[1] || '',
+          name: values[2] || '',
+          elevation: parseFloat(values[3]) || 0,
+          continent: values[4] || '',
+          country: values[6] || '',
+          city: values[7] || '',
+          code: values[9] || values[8] || values[0], // Prefer IATA, fallback to GPS or ICAO
+          latitude: parseFloat(values[11]) || 0,
+          longitude: parseFloat(values[12]) || 0,
+        };
+
+        // Only include airports with valid IATA codes for better UX
+        if (airport.code && airport.code.length === 3 && airport.name) {
+          this.airports.push(airport);
+        }
+      }
+
+      this.isLoaded = true;
+      console.log(`Loaded ${this.airports.length} airports from CSV`);
+    } catch (error) {
+      console.error('Error loading airports from CSV:', error);
+      // Fallback to basic airport data
+      this.loadFallbackAirports();
+    }
+  }
+
+  private loadFallbackAirports(): void {
+    this.airports = [
+      {
+        code: "JFK",
+        icao: "KJFK",
+        name: "John F. Kennedy International Airport",
+        city: "New York",
+        country: "United States",
+        latitude: 40.6413,
+        longitude: -73.7781,
+        elevation: 13,
+        type: "large_airport",
+        continent: "NA"
+      },
+      {
+        code: "LAX",
+        icao: "KLAX",
+        name: "Los Angeles International Airport",
+        city: "Los Angeles",
+        country: "United States",
+        latitude: 33.9428,
+        longitude: -118.4081,
+        elevation: 125,
+        type: "large_airport",
+        continent: "NA"
+      },
+      {
+        code: "LHR",
+        icao: "EGLL",
+        name: "London Heathrow Airport",
+        city: "London",
+        country: "United Kingdom",
+        latitude: 51.4706,
+        longitude: -0.461941,
+        elevation: 83,
+        type: "large_airport",
+        continent: "EU"
+      },
+      {
+        code: "CDG",
+        icao: "LFPG",
+        name: "Charles de Gaulle International Airport",
+        city: "Paris",
+        country: "France",
+        latitude: 49.012779,
+        longitude: 2.55,
+        elevation: 392,
+        type: "large_airport",
+        continent: "EU"
+      },
+      {
+        code: "NRT",
+        icao: "RJAA",
+        name: "Narita International Airport",
+        city: "Tokyo",
+        country: "Japan",
+        latitude: 35.7647,
+        longitude: 140.3864,
+        elevation: 135,
+        type: "large_airport",
+        continent: "AS"
+      }
+    ];
+    this.isLoaded = true;
+  }
+
+  async searchAirports(query: string, limit: number = 10): Promise<AirportData[]> {
+    await this.loadAirportsFromCSV();
+    
+    if (!query || query.length < 1) return [];
+    
+    const normalizedQuery = query.toLowerCase().trim();
+    
+    // Score-based ranking for better autosuggestion
+    const scoredAirports = this.airports.map(airport => {
+      let score = 0;
+      
+      // Exact code match gets highest priority
+      if (airport.code.toLowerCase() === normalizedQuery) {
+        score += 100;
+      } else if (airport.code.toLowerCase().startsWith(normalizedQuery)) {
+        score += 80;
+      } else if (airport.code.toLowerCase().includes(normalizedQuery)) {
+        score += 50;
+      }
+      
+      // City name matching
+      if (airport.city.toLowerCase() === normalizedQuery) {
+        score += 90;
+      } else if (airport.city.toLowerCase().startsWith(normalizedQuery)) {
+        score += 70;
+      } else if (airport.city.toLowerCase().includes(normalizedQuery)) {
+        score += 40;
+      }
+      
+      // Airport name matching
+      if (airport.name.toLowerCase().includes(normalizedQuery)) {
+        score += 30;
+      }
+      
+      // Country matching
+      if (airport.country.toLowerCase().includes(normalizedQuery)) {
+        score += 20;
+      }
+      
+      // Prefer larger airports
+      if (airport.type === 'large_airport') {
+        score += 10;
+      } else if (airport.type === 'medium_airport') {
+        score += 5;
+      }
+      
+      return { airport, score };
+    })
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(item => item.airport);
+    
+    return scoredAirports;
   }
 
   async getAirportByCode(code: string): Promise<AirportData | null> {
+    await this.loadAirportsFromCSV();
     return this.airports.find(airport => 
-      airport.code.toLowerCase() === code.toLowerCase()
+      airport.code.toLowerCase() === code.toLowerCase() ||
+      airport.icao.toLowerCase() === code.toLowerCase()
     ) || null;
   }
 
   async getAllAirports(): Promise<AirportData[]> {
+    await this.loadAirportsFromCSV();
     return this.airports;
+  }
+
+  async getPopularAirports(limit: number = 20): Promise<AirportData[]> {
+    await this.loadAirportsFromCSV();
+    // Return major international airports
+    return this.airports
+      .filter(airport => airport.type === 'large_airport')
+      .slice(0, limit);
   }
 }
 

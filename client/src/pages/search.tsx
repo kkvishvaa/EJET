@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { Card } from "@/components/ui/card";
 import FlightSearchForm from "@/components/flight-search-form";
 import AircraftCard from "@/components/aircraft-card";
@@ -8,10 +9,16 @@ import type { Aircraft } from "@shared/schema";
 export default function Search() {
   const [searchResults, setSearchResults] = useState<Aircraft[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [, setLocation] = useLocation();
 
   const handleSearchResults = (results: Aircraft[]) => {
     setSearchResults(results);
     setHasSearched(true);
+  };
+
+  const handleBookAircraft = (aircraft: Aircraft) => {
+    // Navigate to booking page with aircraft details
+    setLocation(`/booking?aircraft=${aircraft.id}`);
   };
 
   return (
@@ -60,10 +67,7 @@ export default function Search() {
                     <AircraftCard
                       key={aircraft.id}
                       aircraft={aircraft}
-                      onBook={(aircraft) => {
-                        // TODO: Implement booking flow
-                        console.log("Book aircraft:", aircraft);
-                      }}
+                      onBook={handleBookAircraft}
                     />
                   ))}
                 </div>

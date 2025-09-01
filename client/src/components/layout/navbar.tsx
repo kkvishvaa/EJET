@@ -40,7 +40,7 @@ export default function Navbar() {
             <Link href="/">
               <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent cursor-pointer">
                 <Plane className="inline mr-2 h-8 w-8 text-primary" />
-                JetCharter
+                EcoJets
               </h1>
             </Link>
           </div>

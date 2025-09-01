@@ -198,20 +198,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Airport routes
   app.get("/api/airports", async (req, res) => {
     try {
-      const { search } = req.query;
+      const { search, limit } = req.query;
       let airports;
       
       if (search) {
-        airports = await airportService.searchAirports(search as string);
+        const searchLimit = limit ? parseInt(limit as string) : 10;
+        airports = await airportService.searchAirports(search as string, searchLimit);
       } else {
-        airports = await airportService.getAllAirports();
+        airports = await airportService.getPopularAirports(20);
       }
       
       res.json(airports);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch airports" });
+    }
+  });
+
+  // Airport autosuggestion endpoint
+  app.get("/api/airports/suggest", async (req, res) => {
+    try {
+      const { q, limit = 8 } = req.query;
+      
+      if (!q || (q as string).length < 1) {
+        // Return popular airports when no query
+        const popularAirports = await airportService.getPopularAirports(parseInt(limit as string));
+        return res.json(popularAirports);
+      }
+      
+      const suggestions = await airportService.searchAirports(
+        q as string, 
+        parseInt(limit as string)
+      );
+      
+      res.json(suggestions);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get airport suggestions" });
     }
   });
 

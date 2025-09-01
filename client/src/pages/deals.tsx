@@ -134,7 +134,7 @@ export default function Deals() {
                 {/* Aircraft Image */}
                 <div className="relative h-48 overflow-hidden">
                   <img
-                    src={deal.aircraft.imageUrl || "https://images.unsplash.com/photo-1556388158-158ea5ccacbd?ixlib=rb-4.0.3"}
+                    src={deal.aircraft.imageUrl || "/jet1.png"}
                     alt={`${deal.aircraft.manufacturer} ${deal.aircraft.model}`}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />

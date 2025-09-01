@@ -245,7 +245,7 @@ export default function Home() {
             
             <div className="relative">
               <img
-                src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600"
+                src="/jet8.png"
                 alt="Professional dashboard interface"
                 className="rounded-xl shadow-2xl"
               />
