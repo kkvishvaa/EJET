@@ -1,4 +1,4 @@
-# ✈️ FlightFinder - Premium Private Jet Booking Platform
+# ✈️ EcoJets - Premium Private Jet Booking Platform
 
 > A full-stack web application for discovering, booking, and tracking private jet flights with real-time weather integration and comprehensive flight management.
 
