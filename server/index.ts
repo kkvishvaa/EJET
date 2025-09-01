@@ -5,10 +5,18 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
-// Enable CORS for all origins (you can restrict this to specific domains in production)
+// CORS configuration
 app.use(cors({
-  origin: ["https://ecojets-9e0veoyvg-kkvishvaas-projects.vercel.app", "http://localhost:5173", "http://localhost:3000"],
-  credentials: true
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000', 
+    'https://ecojets-4b5jvj2xs-kkvishvaas-projects.vercel.app',
+    'https://ecojets-9e0veoyvg-kkvishvaas-projects.vercel.app',
+    /^https:\/\/.*\.vercel\.app$/
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
