@@ -1,0 +1,696 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JetCharter - Premium Private Jet Booking Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    popover: {
+                        DEFAULT: "var(--popover)",
+                        foreground: "var(--popover-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                    chart: {
+                        "1": "var(--chart-1)",
+                        "2": "var(--chart-2)",
+                        "3": "var(--chart-3)",
+                        "4": "var(--chart-4)",
+                        "5": "var(--chart-5)",
+                    }
+                },
+                fontFamily: {
+                    sans: ["var(--font-sans)"],
+                    serif: ["var(--font-serif)"],
+                    mono: ["var(--font-mono)"],
+                }
+            },
+        }
+    };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --background: hsl(210 40% 98%);
+            --foreground: hsl(222.2 84% 4.9%);
+            --card: hsl(0 0% 100%);
+            --card-foreground: hsl(222.2 84% 4.9%);
+            --popover: hsl(0 0% 100%);
+            --popover-foreground: hsl(222.2 84% 4.9%);
+            --primary: hsl(215 60% 16%);
+            --primary-foreground: hsl(210 40% 98%);
+            --secondary: hsl(45 93% 47%);
+            --secondary-foreground: hsl(222.2 84% 4.9%);
+            --muted: hsl(210 40% 96%);
+            --muted-foreground: hsl(215.4 16.3% 46.9%);
+            --accent: hsl(199 89% 48%);
+            --accent-foreground: hsl(210 40% 98%);
+            --destructive: hsl(0 84.2% 60.2%);
+            --destructive-foreground: hsl(210 40% 98%);
+            --border: hsl(214.3 31.8% 91.4%);
+            --input: hsl(214.3 31.8% 91.4%);
+            --ring: hsl(215 60% 16%);
+            --radius: 0.75rem;
+            --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        }
+        * {
+            border-color: hsl(var(--border));
+        }
+        body {
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            font-family: var(--font-sans);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-background text-foreground">
+    <!-- @COMPONENT: Navigation [responsive navbar with logo and navigation links] -->
+    <nav class="bg-white/95 backdrop-blur-md border-b border-border sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 lg:h-20">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                            <i class="fas fa-plane mr-2"></i>JetCharter
+                        </h1>
+                    </div>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#" class="text-foreground hover:text-primary transition-colors duration-200 font-medium">Home</a>
+                        <a href="#" class="text-muted-foreground hover:text-primary transition-colors duration-200 font-medium">Jets</a>
+                        <a href="#" class="text-muted-foreground hover:text-primary transition-colors duration-200 font-medium">Search</a>
+                        <a href="#" class="text-muted-foreground hover:text-primary transition-colors duration-200 font-medium">Track</a>
+                        <a href="#" class="text-muted-foreground hover:text-primary transition-colors duration-200 font-medium">Deals</a>
+                        <a href="#" class="text-muted-foreground hover:text-primary transition-colors duration-200 font-medium">Dashboard</a>
+                    </div>
+                </div>
+                
+                <div class="hidden md:block">
+                    <button class="bg-primary text-primary-foreground px-6 py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors duration-200">
+                        Book Now
+                    </button>
+                </div>
+                
+                <div class="md:hidden">
+                    <button class="text-foreground hover:text-primary">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- @END_COMPONENT: Navigation -->
+
+    <!-- @COMPONENT: Hero Section [main landing area with enhanced search functionality] -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <!-- A luxurious private jet on a runway at sunset with dramatic sky -->
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1578926314433-e2789279f4aa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&h=1080');">
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-800/60 to-transparent"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center lg:text-left">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8">
+                    <div class="space-y-4">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+                            Luxury Private Jet
+                            <span class="block bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">
+                                Charter Service
+                            </span>
+                        </h1>
+                        <p class="text-xl lg:text-2xl text-gray-200 max-w-2xl">
+                            Experience unparalleled luxury and convenience with our premium private jet fleet. 
+                            Book your next flight in minutes.
+                        </p>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button class="bg-secondary text-secondary-foreground px-8 py-4 rounded-lg font-semibold text-lg hover:bg-secondary/90 transition-all duration-200 transform hover:scale-105">
+                            Explore Fleet
+                        </button>
+                        <button class="bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white/20 transition-all duration-200">
+                            Watch Video
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- @COMPONENT: Enhanced Flight Search Form [improved UX with better styling] -->
+                <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-6 lg:p-8 border border-white/20">
+                    <div class="space-y-6">
+                        <div class="text-center">
+                            <h3 class="text-2xl font-bold text-foreground mb-2">Book Your Flight</h3>
+                            <p class="text-muted-foreground">Find and book the perfect private jet for your journey</p>
+                        </div>
+                        
+                        <form class="space-y-6" data-implementation="Flight search form with API integration">
+                            <!-- Trip Type -->
+                            <div class="flex gap-4">
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="tripType" value="oneway" class="sr-only peer" data-bind="searchForm.tripType">
+                                    <div class="w-4 h-4 border-2 border-primary rounded-full peer-checked:bg-primary peer-checked:border-primary flex items-center justify-center">
+                                        <div class="w-2 h-2 bg-white rounded-full opacity-0 peer-checked:opacity-100"></div>
+                                    </div>
+                                    <span class="ml-2 text-sm font-medium text-foreground">One Way</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="tripType" value="roundtrip" class="sr-only peer" data-bind="searchForm.tripType">
+                                    <div class="w-4 h-4 border-2 border-primary rounded-full peer-checked:bg-primary peer-checked:border-primary flex items-center justify-center">
+                                        <div class="w-2 h-2 bg-white rounded-full opacity-0 peer-checked:opacity-100"></div>
+                                    </div>
+                                    <span class="ml-2 text-sm font-medium text-foreground">Round Trip</span>
+                                </label>
+                            </div>
+                            
+                            <!-- From/To Airports -->
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-foreground mb-2">From</label>
+                                    <div class="relative">
+                                        <input type="text" placeholder="Departure airport" 
+                                               class="w-full pl-12 pr-4 py-4 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 bg-background text-foreground placeholder-muted-foreground"
+                                               data-bind="searchForm.departure">
+                                        <i class="fas fa-plane-departure absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground"></i>
+                                    </div>
+                                </div>
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-foreground mb-2">To</label>
+                                    <div class="relative">
+                                        <input type="text" placeholder="Arrival airport" 
+                                               class="w-full pl-12 pr-4 py-4 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 bg-background text-foreground placeholder-muted-foreground"
+                                               data-bind="searchForm.arrival">
+                                        <i class="fas fa-plane-arrival absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Date Selection -->
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Departure Date</label>
+                                    <div class="relative">
+                                        <input type="date" 
+                                               class="w-full pl-12 pr-4 py-4 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 bg-background text-foreground"
+                                               data-bind="searchForm.departureDate">
+                                        <i class="fas fa-calendar-alt absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Return Date</label>
+                                    <div class="relative">
+                                        <input type="date" 
+                                               class="w-full pl-12 pr-4 py-4 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 bg-background text-foreground"
+                                               data-bind="searchForm.returnDate">
+                                        <i class="fas fa-calendar-alt absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Passengers and Aircraft -->
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Passengers</label>
+                                    <select class="w-full px-4 py-4 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 bg-background text-foreground"
+                                            data-bind="searchForm.passengers">
+                                        <option value="">Select passengers</option>
+                                        <option value="1">1 Passenger</option>
+                                        <option value="2">2 Passengers</option>
+                                        <option value="3">3 Passengers</option>
+                                        <option value="4">4 Passengers</option>
+                                        <option value="5">5+ Passengers</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Aircraft Category</label>
+                                    <select class="w-full px-4 py-4 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 bg-background text-foreground"
+                                            data-bind="searchForm.category">
+                                        <option value="">Any Category</option>
+                                        <option value="light">Light Jets</option>
+                                        <option value="midsize">Midsize Jets</option>
+                                        <option value="heavy">Heavy Jets</option>
+                                        <option value="ultra">Ultra Long Range</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" 
+                                    class="w-full bg-gradient-to-r from-primary to-accent text-white py-4 px-6 rounded-lg font-semibold text-lg hover:from-primary/90 hover:to-accent/90 transition-all duration-200 transform hover:scale-[1.02] shadow-lg"
+                                    data-event="click:handleFlightSearch">
+                                <i class="fas fa-search mr-2"></i>Search Flights
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: Enhanced Flight Search Form -->
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Hero Section -->
+
+    <!-- @COMPONENT: Features Section [key platform features and benefits] -->
+    <section class="py-20 bg-muted/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                    Why Choose JetCharter
+                </h2>
+                <p class="text-xl text-muted-foreground max-w-3xl mx-auto">
+                    Experience the ultimate in luxury travel with our comprehensive private jet services
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-card rounded-xl p-6 shadow-sm border border-border hover:shadow-lg transition-all duration-200 text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-clock text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-foreground mb-2">24/7 Availability</h3>
+                    <p class="text-muted-foreground">Book flights anytime with our round-the-clock booking system and customer support.</p>
+                </div>
+                
+                <div class="bg-card rounded-xl p-6 shadow-sm border border-border hover:shadow-lg transition-all duration-200 text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-secondary to-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-shield-alt text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-foreground mb-2">Safety First</h3>
+                    <p class="text-muted-foreground">All aircraft undergo rigorous safety inspections and our pilots are highly experienced.</p>
+                </div>
+                
+                <div class="bg-card rounded-xl p-6 shadow-sm border border-border hover:shadow-lg transition-all duration-200 text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-accent to-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-route text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-foreground mb-2">Global Network</h3>
+                    <p class="text-muted-foreground">Access to thousands of airports worldwide with flexible routing options.</p>
+                </div>
+                
+                <div class="bg-card rounded-xl p-6 shadow-sm border border-border hover:shadow-lg transition-all duration-200 text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-concierge-bell text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-foreground mb-2">Luxury Service</h3>
+                    <p class="text-muted-foreground">Premium amenities and personalized service for an unforgettable experience.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Features Section -->
+
+    <!-- @COMPONENT: Aircraft Fleet [showcase of available jets] -->
+    <section class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                    Our Premium Fleet
+                </h2>
+                <p class="text-xl text-muted-foreground max-w-3xl mx-auto">
+                    Choose from our carefully curated selection of luxury aircraft
+                </p>
+            </div>
+            
+            <!-- @MAP: jets.map(jet => ( -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" data-mock="true">
+                <div class="bg-card rounded-xl overflow-hidden shadow-lg border border-border hover:shadow-xl transition-all duration-300 group">
+                    <!-- A sleek light private jet on tarmac -->
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1556388158-158ea5ccacbd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
+                             alt="Citation CJ3+ Light Jet" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm font-medium">Light Jet</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-foreground mb-2" data-bind="jet.model">Citation CJ3+</h3>
+                        <p class="text-muted-foreground mb-4" data-bind="jet.description">Perfect for short to medium-range flights with luxury amenities.</p>
+                        <div class="grid grid-cols-3 gap-4 mb-4 text-sm">
+                            <div class="text-center">
+                                <p class="font-medium text-foreground" data-bind="jet.passengers">7</p>
+                                <p class="text-muted-foreground">Passengers</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="font-medium text-foreground" data-bind="jet.range">2,040</p>
+                                <p class="text-muted-foreground">Range (nm)</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="font-medium text-foreground" data-bind="jet.speed">478</p>
+                                <p class="text-muted-foreground">Speed (mph)</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-primary" data-bind="jet.hourlyRate">$3,500/hr</span>
+                            <button class="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors duration-200">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-card rounded-xl overflow-hidden shadow-lg border border-border hover:shadow-xl transition-all duration-300 group">
+                    <!-- A mid-size private jet in flight -->
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
+                             alt="Hawker 800XP Midsize Jet" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-medium">Midsize Jet</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-foreground mb-2" data-bind="jet.model">Hawker 800XP</h3>
+                        <p class="text-muted-foreground mb-4" data-bind="jet.description">Ideal for coast-to-coast flights with spacious cabin comfort.</p>
+                        <div class="grid grid-cols-3 gap-4 mb-4 text-sm">
+                            <div class="text-center">
+                                <p class="font-medium text-foreground" data-bind="jet.passengers">8</p>
+                                <p class="text-muted-foreground">Passengers</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="font-medium text-foreground" data-bind="jet.range">2,540</p>
+                                <p class="text-muted-foreground">Range (nm)</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="font-medium text-foreground" data-bind="jet.speed">514</p>
+                                <p class="text-muted-foreground">Speed (mph)</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-primary" data-bind="jet.hourlyRate">$4,800/hr</span>
+                            <button class="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors duration-200">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-card rounded-xl overflow-hidden shadow-lg border border-border hover:shadow-xl transition-all duration-300 group">
+                    <!-- A large luxury private jet on runway -->
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1583473848882-f9a5bc7fd2ee?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
+                             alt="Gulfstream G650 Heavy Jet" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">Heavy Jet</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-foreground mb-2" data-bind="jet.model">Gulfstream G650</h3>
+                        <p class="text-muted-foreground mb-4" data-bind="jet.description">Ultra-long-range luxury for international travel with unmatched comfort.</p>
+                        <div class="grid grid-cols-3 gap-4 mb-4 text-sm">
+                            <div class="text-center">
+                                <p class="font-medium text-foreground" data-bind="jet.passengers">14</p>
+                                <p class="text-muted-foreground">Passengers</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="font-medium text-foreground" data-bind="jet.range">7,000</p>
+                                <p class="text-muted-foreground">Range (nm)</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="font-medium text-foreground" data-bind="jet.speed">652</p>
+                                <p class="text-muted-foreground">Speed (mph)</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-primary" data-bind="jet.hourlyRate">$8,500/hr</span>
+                            <button class="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors duration-200">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_MAP )) -->
+            
+            <div class="text-center mt-12">
+                <button class="bg-gradient-to-r from-primary to-accent text-white px-8 py-4 rounded-lg font-semibold text-lg hover:from-primary/90 hover:to-accent/90 transition-all duration-200 transform hover:scale-105">
+                    View Complete Fleet
+                </button>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Aircraft Fleet -->
+
+    <!-- @COMPONENT: Popular Destinations [featured travel destinations] -->
+    <section class="py-20 bg-muted/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                    Popular Destinations
+                </h2>
+                <p class="text-xl text-muted-foreground max-w-3xl mx-auto">
+                    Discover exclusive destinations accessed through our premium private jet service
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- A stunning view of Miami skyline with ocean -->
+                <div class="relative group overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
+                         alt="Miami skyline and beach destination" 
+                         class="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-6 left-6 right-6">
+                        <h3 class="text-2xl font-bold text-white mb-2">Miami, FL</h3>
+                        <p class="text-gray-200 mb-4">Luxury beaches and vibrant nightlife</p>
+                        <button class="bg-white/20 backdrop-blur-sm text-white border border-white/30 px-4 py-2 rounded-lg font-medium hover:bg-white/30 transition-all duration-200">
+                            Explore Flights
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- A breathtaking view of Aspen mountains and ski resort -->
+                <div class="relative group overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+                    <img src="https://pixabay.com/get/gbaef3f43a3eb10cf9fe362690ca6d8998984b633a83d77399f99612f2d2859eb80f6f6e526c0ad2fe0e0bb03e47e748d72f2c9712c5b2a253043a44e18f8cc5f_1280.jpg" 
+                         alt="Aspen ski resort with snow-capped mountains" 
+                         class="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-6 left-6 right-6">
+                        <h3 class="text-2xl font-bold text-white mb-2">Aspen, CO</h3>
+                        <p class="text-gray-200 mb-4">World-class skiing and mountain luxury</p>
+                        <button class="bg-white/20 backdrop-blur-sm text-white border border-white/30 px-4 py-2 rounded-lg font-medium hover:bg-white/30 transition-all duration-200">
+                            Explore Flights
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- A magnificent view of Napa Valley vineyards at sunset -->
+                <div class="relative group overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
+                         alt="Napa Valley vineyards with rolling hills" 
+                         class="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-6 left-6 right-6">
+                        <h3 class="text-2xl font-bold text-white mb-2">Napa Valley, CA</h3>
+                        <p class="text-gray-200 mb-4">Premium wine country experiences</p>
+                        <button class="bg-white/20 backdrop-blur-sm text-white border border-white/30 px-4 py-2 rounded-lg font-medium hover:bg-white/30 transition-all duration-200">
+                            Explore Flights
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Popular Destinations -->
+
+    <!-- @COMPONENT: Services Overview [additional platform features] -->
+    <section class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-8">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-6">
+                            Complete Private Aviation Solutions
+                        </h2>
+                        <p class="text-xl text-muted-foreground">
+                            From flight search to real-time tracking, we provide a comprehensive platform 
+                            for all your private jet travel needs.
+                        </p>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-search text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-foreground mb-2">Advanced Flight Search</h3>
+                                <p class="text-muted-foreground">Filter by aircraft type, passenger count, and route preferences to find the perfect flight.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-r from-secondary to-accent rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-map-marker-alt text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-foreground mb-2">Real-time Flight Tracking</h3>
+                                <p class="text-muted-foreground">Monitor your flight status with live tracking and receive updates throughout your journey.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-r from-accent to-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-credit-card text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-foreground mb-2">Secure Payment Processing</h3>
+                                <p class="text-muted-foreground">Complete your booking with confidence using our encrypted payment system.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-chart-line text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-foreground mb-2">Analytics Dashboard</h3>
+                                <p class="text-muted-foreground">Access comprehensive analytics and booking history through your personal dashboard.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <!-- A modern business dashboard on laptop screen -->
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
+                         alt="Professional dashboard interface on laptop" 
+                         class="rounded-xl shadow-2xl">
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Services Overview -->
+
+    <!-- @COMPONENT: Footer [comprehensive site footer with links and contact info] -->
+    <footer class="bg-primary text-primary-foreground py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="space-y-4">
+                    <h3 class="text-2xl font-bold">
+                        <i class="fas fa-plane mr-2"></i>JetCharter
+                    </h3>
+                    <p class="text-primary-foreground/80 max-w-xs">
+                        Your premier destination for luxury private jet charter services worldwide.
+                    </p>
+                    <div class="flex space-x-4">
+                        <button class="w-10 h-10 bg-primary-foreground/10 rounded-lg flex items-center justify-center hover:bg-primary-foreground/20 transition-colors duration-200">
+                            <i class="fab fa-facebook text-lg"></i>
+                        </button>
+                        <button class="w-10 h-10 bg-primary-foreground/10 rounded-lg flex items-center justify-center hover:bg-primary-foreground/20 transition-colors duration-200">
+                            <i class="fab fa-twitter text-lg"></i>
+                        </button>
+                        <button class="w-10 h-10 bg-primary-foreground/10 rounded-lg flex items-center justify-center hover:bg-primary-foreground/20 transition-colors duration-200">
+                            <i class="fab fa-instagram text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <h4 class="text-lg font-semibold">Services</h4>
+                    <ul class="space-y-2 text-primary-foreground/80">
+                        <li><a href="#" class="hover:text-primary-foreground transition-colors duration-200">Flight Search</a></li>
+                        <li><a href="#" class="hover:text-primary-foreground transition-colors duration-200">Aircraft Fleet</a></li>
+                        <li><a href="#" class="hover:text-primary-foreground transition-colors duration-200">Flight Tracking</a></li>
+                        <li><a href="#" class="hover:text-primary-foreground transition-colors duration-200">Empty Leg Deals</a></li>
+                    </ul>
+                </div>
+                
+                <div class="space-y-4">
+                    <h4 class="text-lg font-semibold">Support</h4>
+                    <ul class="space-y-2 text-primary-foreground/80">
+                        <li><a href="#" class="hover:text-primary-foreground transition-colors duration-200">Help Center</a></li>
+                        <li><a href="#" class="hover:text-primary-foreground transition-colors duration-200">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-primary-foreground transition-colors duration-200">Safety Information</a></li>
+                        <li><a href="#" class="hover:text-primary-foreground transition-colors duration-200">Terms of Service</a></li>
+                    </ul>
+                </div>
+                
+                <div class="space-y-4">
+                    <h4 class="text-lg font-semibold">Contact</h4>
+                    <div class="space-y-3 text-primary-foreground/80">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-phone w-5"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-envelope w-5"></i>
+                            <span>info@jetcharter.com</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-map-marker-alt w-5"></i>
+                            <span>New York, NY</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-primary-foreground/20 mt-12 pt-8 text-center">
+                <p class="text-primary-foreground/60">
+                    © 2024 JetCharter. All rights reserved. | Privacy Policy | Terms of Service
+                </p>
+            </div>
+        </div>
+    </footer>
+    <!-- @END_COMPONENT: Footer -->
+
+    <script>
+        // TODO: Implement flight search functionality
+        (function() {
+            // Enhanced search form interactions
+            const searchForm = document.querySelector('form');
+            if (searchForm) {
+                searchForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    // TODO: Integrate with backend API for flight search
+                    console.log('Flight search submitted');
+                });
+            }
+
+            // TODO: Implement real-time flight tracking
+            // TODO: Integrate payment processing with Razorpay
+            // TODO: Add booking system functionality
+            // TODO: Connect dashboard analytics
+            // TODO: Implement aircraft comparison tool
+        })();
+    </script>
+</body>
+</html>

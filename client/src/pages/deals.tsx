@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import AircraftCard from "@/components/aircraft-card";
-import { Percent, Clock, MapPin, Plane } from "lucide-react";
+import WeatherWidget from "@/components/weather-widget";
+import { Percent, Clock, MapPin, Plane, TrendingDown, Star, Calendar } from "lucide-react";
 import type { Aircraft } from "@shared/schema";
 
 // Mock empty leg deals data structure
@@ -83,6 +84,39 @@ export default function Deals() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Flight Conditions */}
+        <div className="mb-12">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+              Current Flight Conditions
+            </h2>
+            <p className="text-muted-foreground">
+              Check weather conditions for deal destinations
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <WeatherWidget 
+              latitude={40.6413} 
+              longitude={-73.7781} 
+              location="New York (JFK)"
+              className="h-fit"
+            />
+            <WeatherWidget 
+              latitude={25.7617} 
+              longitude={-80.1918} 
+              location="Miami (MIA)"
+              className="h-fit"
+            />
+            <WeatherWidget 
+              latitude={36.0840} 
+              longitude={-115.1537} 
+              location="Las Vegas (LAS)"
+              className="h-fit"
+            />
+          </div>
+        </div>
 
         {/* Deals Grid */}
         {emptyLegDeals.length === 0 ? (

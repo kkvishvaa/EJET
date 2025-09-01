@@ -17,6 +17,23 @@ export default function Jets() {
     queryKey: ["/api/aircraft"],
   });
 
+  // Get aircraft by category for statistics
+  const { data: lightJets = [] } = useQuery<Aircraft[]>({
+    queryKey: ["/api/aircraft/category/light"],
+  });
+
+  const { data: midsizeJets = [] } = useQuery<Aircraft[]>({
+    queryKey: ["/api/aircraft/category/midsize"],
+  });
+
+  const { data: heavyJets = [] } = useQuery<Aircraft[]>({
+    queryKey: ["/api/aircraft/category/heavy"],
+  });
+
+  const { data: ultraJets = [] } = useQuery<Aircraft[]>({
+    queryKey: ["/api/aircraft/category/ultra"],
+  });
+
   const filteredAircraft = aircraft
     .filter((jet) => {
       const matchesSearch = 
@@ -62,6 +79,49 @@ export default function Jets() {
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Explore our comprehensive collection of luxury private jets, from light jets for short trips to ultra-long-range aircraft for international travel.
           </p>
+        </div>
+
+        {/* Fleet Statistics */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800">
+            <CardContent className="p-6 text-center">
+              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+                {lightJets.length}
+              </div>
+              <div className="text-sm text-blue-700 dark:text-blue-300 font-medium">Light Jets</div>
+              <div className="text-xs text-blue-600 dark:text-blue-400">Short & Regional</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800">
+            <CardContent className="p-6 text-center">
+              <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
+                {midsizeJets.length}
+              </div>
+              <div className="text-sm text-green-700 dark:text-green-300 font-medium">Midsize Jets</div>
+              <div className="text-xs text-green-600 dark:text-green-400">Mid-Range</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-purple-200 dark:border-purple-800">
+            <CardContent className="p-6 text-center">
+              <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
+                {heavyJets.length}
+              </div>
+              <div className="text-sm text-purple-700 dark:text-purple-300 font-medium">Heavy Jets</div>
+              <div className="text-xs text-purple-600 dark:text-purple-400">Long-Range</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900 border-amber-200 dark:border-amber-800">
+            <CardContent className="p-6 text-center">
+              <div className="text-3xl font-bold text-amber-600 dark:text-amber-400 mb-2">
+                {ultraJets.length}
+              </div>
+              <div className="text-sm text-amber-700 dark:text-amber-300 font-medium">Ultra Jets</div>
+              <div className="text-xs text-amber-600 dark:text-amber-400">Ultra Long-Range</div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Filters */}

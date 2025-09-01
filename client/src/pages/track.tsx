@@ -50,7 +50,7 @@ export default function Track() {
   });
 
   const { data: weatherData } = useQuery<WeatherData>({
-    queryKey: ["/api/weather"],
+    queryKey: ["/api/weather", "40.6413", "-73.7781"],
     queryFn: async () => {
       // Default coordinates (New York for demo)
       const response = await fetch("/api/weather?lat=40.6413&lon=-73.7781");
@@ -59,6 +59,16 @@ export default function Track() {
     },
     enabled: activeTab === "live",
     refetchInterval: 300000, // Refresh every 5 minutes
+  });
+
+  // Add airports data query
+  const { data: airports = [] } = useQuery({
+    queryKey: ["/api/airports"],
+    queryFn: async () => {
+      const response = await fetch("/api/airports");
+      if (!response.ok) throw new Error("Failed to fetch airports");
+      return response.json();
+    },
   });
 
   const handleSearch = () => {

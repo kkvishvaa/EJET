@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import AirportSearch from "@/components/airport-search";
 import { Search, PlaneIcon as PlaneTakeoff, PlaneIcon as PlaneLanding, Calendar, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -97,32 +98,24 @@ export default function FlightSearchForm({ onSearchResults }: FlightSearchFormPr
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="departure" className="text-sm font-medium text-foreground">From</Label>
-              <div className="relative">
-                <PlaneTakeoff className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                <Input
-                  id="departure"
-                  placeholder="Departure airport"
-                  className="pl-12 py-4 border-border focus:ring-2 focus:ring-primary focus:border-primary"
-                  {...form.register("departure")}
-                  data-testid="input-departure"
-                />
-              </div>
+              <AirportSearch
+                placeholder="Departure airport"
+                value={form.watch("departure")}
+                onSelect={(value) => form.setValue("departure", value)}
+                testId="input-departure"
+              />
               {form.formState.errors.departure && (
                 <p className="text-sm text-destructive">{form.formState.errors.departure.message}</p>
               )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="arrival" className="text-sm font-medium text-foreground">To</Label>
-              <div className="relative">
-                <PlaneLanding className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                <Input
-                  id="arrival"
-                  placeholder="Arrival airport"
-                  className="pl-12 py-4 border-border focus:ring-2 focus:ring-primary focus:border-primary"
-                  {...form.register("arrival")}
-                  data-testid="input-arrival"
-                />
-              </div>
+              <AirportSearch
+                placeholder="Arrival airport"
+                value={form.watch("arrival")}
+                onSelect={(value) => form.setValue("arrival", value)}
+                testId="input-arrival"
+              />
               {form.formState.errors.arrival && (
                 <p className="text-sm text-destructive">{form.formState.errors.arrival.message}</p>
               )}

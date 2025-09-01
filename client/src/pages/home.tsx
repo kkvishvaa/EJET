@@ -4,6 +4,7 @@ import FlightSearchForm from "@/components/flight-search-form";
 import AircraftCard from "@/components/aircraft-card";
 import DestinationCard from "@/components/destination-card";
 import FeatureCard from "@/components/feature-card";
+import WeatherWidget from "@/components/weather-widget";
 import { Clock, Shield, Route, Award, Search, MapPin, CreditCard, BarChart3 } from "lucide-react";
 import type { Aircraft, Destination } from "@shared/schema";
 
@@ -145,9 +146,41 @@ export default function Home() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {destinations.map((destination) => (
+            {destinations.map((destination: any) => (
               <DestinationCard key={destination.id} destination={destination} />
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Weather & Flight Conditions */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Current Flight Conditions
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Stay informed with real-time weather data for major airports
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <WeatherWidget 
+              latitude={40.6413} 
+              longitude={-73.7781} 
+              location="New York (JFK)"
+            />
+            <WeatherWidget 
+              latitude={34.0522} 
+              longitude={-118.2437} 
+              location="Los Angeles (LAX)"
+            />
+            <WeatherWidget 
+              latitude={25.7617} 
+              longitude={-80.1918} 
+              location="Miami (MIA)"
+            />
           </div>
         </div>
       </section>
