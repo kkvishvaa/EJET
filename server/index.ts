@@ -1,8 +1,16 @@
 import express, { type Request, Response, NextFunction } from "express";
+import cors from "cors";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
+
+// Enable CORS for all origins (you can restrict this to specific domains in production)
+app.use(cors({
+  origin: ["https://ecojets-9e0veoyvg-kkvishvaas-projects.vercel.app", "http://localhost:5173", "http://localhost:3000"],
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

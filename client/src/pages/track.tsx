@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, MapPin, Clock, Plane, AlertCircle, Cloud, Wind, Thermometer, Globe } from "lucide-react";
 import type { Flight } from "@shared/schema";
+import { API_BASE_URL } from "@/lib/api";
 
 interface LiveFlightData {
   icao24: string;
@@ -53,7 +54,7 @@ export default function Track() {
     queryKey: ["/api/weather", "40.6413", "-73.7781"],
     queryFn: async () => {
       // Default coordinates (New York for demo)
-      const response = await fetch("/api/weather?lat=40.6413&lon=-73.7781");
+      const response = await fetch(`${API_BASE_URL}/api/weather?lat=40.6413&lon=-73.7781`);
       if (!response.ok) throw new Error("Failed to fetch weather");
       return response.json();
     },
@@ -65,7 +66,7 @@ export default function Track() {
   const { data: airports = [] } = useQuery({
     queryKey: ["/api/airports"],
     queryFn: async () => {
-      const response = await fetch("/api/airports");
+      const response = await fetch(`${API_BASE_URL}/api/airports`);
       if (!response.ok) throw new Error("Failed to fetch airports");
       return response.json();
     },

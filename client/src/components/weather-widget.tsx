@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Cloud, Wind, Thermometer, MapPin, Eye, Droplets } from "lucide-react";
+import { API_BASE_URL } from "@/lib/api";
 
 interface WeatherData {
   temperature: number;
@@ -27,7 +28,7 @@ export default function WeatherWidget({
   const { data: weatherData, isLoading, error } = useQuery<WeatherData>({
     queryKey: ["/api/weather", latitude.toString(), longitude.toString()],
     queryFn: async () => {
-      const response = await fetch(`/api/weather?lat=${latitude}&lon=${longitude}`);
+      const response = await fetch(`${API_BASE_URL}/api/weather?lat=${latitude}&lon=${longitude}`);
       if (!response.ok) throw new Error("Failed to fetch weather");
       return response.json();
     },

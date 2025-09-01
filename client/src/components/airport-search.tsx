@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Search, Plane } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/api";
 
 interface Airport {
   code: string;
@@ -36,8 +37,8 @@ export default function AirportSearch({ placeholder, onSelect, value, testId }: 
     queryKey: ["airport-suggestions", searchQuery],
     queryFn: async () => {
       const url = searchQuery.trim() 
-        ? `/api/airports/suggest?q=${encodeURIComponent(searchQuery)}&limit=8`
-        : "/api/airports/suggest?limit=8";
+        ? `${API_BASE_URL}/api/airports/suggest?q=${encodeURIComponent(searchQuery)}&limit=8`
+        : `${API_BASE_URL}/api/airports/suggest?limit=8`;
       const response = await fetch(url);
       if (!response.ok) throw new Error("Failed to fetch airports");
       return response.json();

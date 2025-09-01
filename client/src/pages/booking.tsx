@@ -16,6 +16,7 @@ import { User, MapPin, CreditCard, Check, Loader2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { Aircraft } from "@shared/schema";
+import { API_BASE_URL } from "@/lib/api";
 
 const passengerDetailsSchema = z.object({
   // Primary passenger
@@ -71,7 +72,7 @@ export default function Booking() {
     queryKey: ['/api/aircraft', aircraftId],
     queryFn: async () => {
       if (!aircraftId) return null;
-      const response = await fetch(`/api/aircraft/${aircraftId}`);
+      const response = await fetch(`${API_BASE_URL}/api/aircraft/${aircraftId}`);
       if (!response.ok) throw new Error('Failed to fetch aircraft');
       return response.json();
     },
